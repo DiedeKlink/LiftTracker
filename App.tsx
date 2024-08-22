@@ -1,20 +1,29 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import SplitSelectorDropdown from './components/Dropdown';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import AddExercise from './components/AddExercise';
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+
+    <SafeAreaView style={styles.safeContainer}>
+      <StatusBar/>
+      <View style={styles.container}>
+      <SplitSelectorDropdown/>
+      <AddExercise/>
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeContainer: {
+    flex: 1
+  },
   container: {
-    flex: 1,
+
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    paddingHorizontal: 12
   },
 });
