@@ -1,10 +1,14 @@
 import { FlatList, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import uuid from 'react-native-uuid';
+import { format } from 'date-fns';
 
 
 import popularExercises from '../data/popularExercises';
+import Button from './Button';
+import { setItem } from '../utils/AsyncStorage';
+
 
 
 
@@ -16,10 +20,13 @@ export default function AddExercise() {
     const [reps, setReps] = useState<number | null>(null)
     const [exercises, setExercises] = useState([]);
     const [filteredExercises, setFilteredExercises] = useState([]);
+    const [workouts, setWorkouts] = useState({})
 
     const addNewExercise = () => {
+
         if (exerciseName === "" || weight === null || reps === null) {
             alert('Fill in all fields')
+            return false;
         }
         //const newExercise = `${exerciseName} ${weight}kg for ${reps} reps`
         const newExercise = {
@@ -28,29 +35,75 @@ export default function AddExercise() {
             weight: weight,
             reps: reps
         }
-        setExercises(excercises => [...excercises, newExercise])
+
+
+     
+        //setExercises(exercises => [...exercises, newExercise])
+        setExercises(prevExercises => ([...prevExercises, newExercise]))
+
+
+
+        // this.setExercises({ 
+        //     exercises : [...exercises, newExercise] 
+        //   }, 
+        //   () => console.log(exercises),
+        // )
+         const todaysDate = format(new Date(), 'dd-MM-yyyy')
+
+
+
+    //     let workoutExists = false
+
+    //     Object.keys(workouts).forEach(key => {
+    //         if (obj[key] === todaysDate) workoutExists = true
+    //       });
+
+    //     if (!workoutExists) {
+    //         const newWorkout = { 
+    //             date: todaysDate,
+    //             exercises: exercises
+    //         }
+    //         setWorkouts({...workouts, newWorkout})
+
+    //     }
+
+     //  setWorkouts(todaysDate[PrevExercises])
+
+        
 
         setExerciseName("")
         setWeight(null)
         setReps(null)
         setFilteredExercises([]);
-        console.log(newExercise)
     }
+
+    useEffect(() => {
+      const todaysDate = format(new Date(), 'dd-MM-yyyy')
+   //setWorkouts({[todaysDate]: exercises})
+   setWorkouts(prevWorkouts => ({ ...prevWorkouts, [todaysDate]: exercises}))
+  // console.log(workouts[todaysDate])
+ //console.log(exercises)
+    },[exercises])
 
     const removeExercise = (exerciseId: string) => {
         const newExerciseArray = exercises.filter((item) => item.id !== exerciseId);
         setExercises(newExerciseArray)
     }
 
+    type selectExerciseProps = {
+        exercise: string | number
+    }
 
-    const selectExercise = (exercise) => {
+    const selectExercise = (exercise: selectExerciseProps) => {
    
           setExerciseName(exercise);
           setFilteredExercises([]);
    
       };
 
-      const handleExerciseNameChange = (text) => {
+ 
+
+      const handleExerciseNameChange = (text: string) => {
         setExerciseName(text);
         if (text) {
           setFilteredExercises(
@@ -69,15 +122,16 @@ export default function AddExercise() {
                 <FlatList
                     data={exercises}
                     renderItem={
-                        ({ item }) =>
+                        ({ item }: Exercise) =>
                             <View style={styles.exerciseRow}>
-                                <Text>{`${item.name} ${item.weight}kg for ${item.reps} reps`}</Text>
-                                <Pressable
-                                    onPress={() => removeExercise(item.id)}
-                                    style={styles.btnStyle}
-                                >
-                                    <Text>Remove</Text>
-                                </Pressable>
+                                <Text>{`${item.name} ${item.weight}kg for ${item.reps} reps`}</Text>                            
+                                <Button 
+                                backgroundColor='orange'
+                                onPress={() => removeExercise(item.id)}
+                                fontSize={16}
+                                color='#333'
+                                btnText='Remove'
+                                />
                             </View>
                     }
                     keyExtractor={(item, index) => index}
@@ -96,9 +150,9 @@ export default function AddExercise() {
                     <View style={styles.dropdown}>
                       <View>
                         {filteredExercises.map((exercise, index) => (
-                          <TouchableOpacity key={index} onPress={() => selectExercise(exercise)}>
+                          <Pressable key={index} onPress={() => selectExercise(exercise)}>
                             <Text style={styles.dropdownItem}>{exercise}</Text>
-                          </TouchableOpacity>
+                          </Pressable>
                         ))}
                       </View>
                     </View>
@@ -121,10 +175,14 @@ export default function AddExercise() {
                     value={reps}
                 />
             </View>
-            <Pressable style={styles.btnStyle}
-                onPress={addNewExercise}>
-                <Text style={styles.btnText}>Add Exercise</Text>
-            </Pressable>
+
+            <Button
+                backgroundColor='#32a852'
+                onPress={addNewExercise}
+                fontSize={16}
+                color='#fff'
+                btnText='Add Exercise'
+            />
 
         </>
     )
@@ -145,7 +203,7 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         marginVertical: 10,
         borderRadius: 8,
-
+        	paddingHorizontal: 5
     },
     btnText: {
         color: '#fff',
