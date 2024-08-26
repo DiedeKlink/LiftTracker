@@ -80,7 +80,7 @@ export default function AddExercise() {
     useEffect(() => {
       const todaysDate = format(new Date(), 'dd-MM-yyyy')
    //setWorkouts({[todaysDate]: exercises})
-   setWorkouts(prevWorkouts => ({ ...prevWorkouts, [todaysDate]: exercises}))
+   setWorkouts(prevWorkouts => ({ ...prevWorkouts, [todaysDate]: {exercises: exercises}}))
   // console.log(workouts[todaysDate])
  //console.log(exercises)
     },[exercises])
