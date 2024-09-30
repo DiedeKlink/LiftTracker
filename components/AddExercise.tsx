@@ -30,11 +30,10 @@ export default function AddExercise() {
   const [exerciseName, setExerciseName] = useState<string>("");
   const [weight, setWeight] = useState<number | null>(null);
   const [reps, setReps] = useState<number | null>(null);
-  const [exercises, setExercises] = useState<ExerciseProps>([]);
-  const [filteredExercises, setFilteredExercises] = useState<string[]>([]);
-  const [currentWorkout, setCurrentWorkout] = useState({});
 
-  const { date, addWorkout, workouts, setWorkouts, split } = useWorkouts();
+  const [filteredExercises, setFilteredExercises] = useState<string[]>([]);
+
+  const { date, workouts, setWorkouts, split } = useWorkouts();
 
   const addNewExercise = () => {
     if (exerciseName === "" || weight === null || reps === null) {
@@ -73,8 +72,6 @@ export default function AddExercise() {
       }
     });
 
-    //console.log("workouts", workouts[date]);
-
     setExerciseName("");
     setWeight(null);
     setReps(null);
@@ -82,9 +79,19 @@ export default function AddExercise() {
   };
 
   const removeExercise = (exerciseId: string) => {
-    const newExerciseArray = exercises.filter((item) => item.id !== exerciseId);
-    setExercises(newExerciseArray);
-    addWorkout(newExerciseArray);
+    const updatedExercises = workouts[date].exercises.filter(
+      (exercise: Exercise) => exercise.id !== exerciseId
+    );
+
+    setWorkouts((prev) => {
+      return {
+        ...prev,
+        [date]: {
+          ...prev[date],
+          exercises: updatedExercises,
+        },
+      };
+    });
   };
 
   const selectExercise = (exercise: string) => {

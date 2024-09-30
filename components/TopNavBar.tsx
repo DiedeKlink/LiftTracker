@@ -3,12 +3,12 @@ import React from "react";
 
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useWorkouts } from "../context/WorkoutContext";
-import { addDays, subDays } from "date-fns";
+import { format } from "date-fns";
 
 export default function TopNavBar() {
   const { date, handleSetDate } = useWorkouts();
 
-  const dateValue = date;
+  const dateValue = format(new Date(date), "dd-MM-yyyy");
 
   return (
     <View style={styles.container}>
