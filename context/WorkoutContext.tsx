@@ -86,4 +86,4 @@ export const WorkoutProvider = ({ children }: WorkOutProviderProps) => {
   );
 };
 
-export const useWorkouts = () => useContext(WorkoutContext);
+//export const useWorkouts = () => useContext(WorkoutContext);

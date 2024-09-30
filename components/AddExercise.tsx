@@ -15,7 +15,8 @@ import { format } from "date-fns";
 import popularExercises from "../data/popularExercises";
 import Button from "./Button";
 import { setItem } from "../utils/AsyncStorage";
-import { useWorkouts } from "../context/WorkoutContext";
+import { useWorkoutContext } from "../lib/hooks";
+// import { useWorkouts } from "../context/WorkoutContext";
 
 type Exercise = {
   id: string | number[];
@@ -33,7 +34,7 @@ export default function AddExercise() {
 
   const [filteredExercises, setFilteredExercises] = useState<string[]>([]);
 
-  const { date, workouts, setWorkouts, split } = useWorkouts();
+  const { date, workouts, setWorkouts, split } = useWorkoutContext();
 
   const addNewExercise = () => {
     if (exerciseName === "" || weight === null || reps === null) {

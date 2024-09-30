@@ -2,11 +2,11 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import React from "react";
 
 import Icon from "react-native-vector-icons/FontAwesome";
-import { useWorkouts } from "../context/WorkoutContext";
 import { format } from "date-fns";
+import { useWorkoutContext } from "../lib/hooks";
 
 export default function TopNavBar() {
-  const { date, handleSetDate } = useWorkouts();
+  const { date, handleSetDate } = useWorkoutContext();
 
   const dateValue = format(new Date(date), "dd-MM-yyyy");
 
