@@ -1,7 +1,18 @@
 import { addDays, format, set, subDays } from "date-fns";
 import { createContext, useContext, useEffect, useState } from "react";
 
-export const WorkoutContext = createContext({});
+type WorkoutContext = {
+  split: string | null;
+  addSplit: (splits: string) => void;
+  date: string;
+  handleSetDate: (direction: string) => void;
+  addWorkout: (exercises: any) => void;
+  workouts: any;
+  setWorkouts: any;
+  setSplit: any;
+};
+
+export const WorkoutContext = createContext<WorkoutContext | {}>({});
 
 type WorkOutProviderProps = {
   children: React.ReactNode;
@@ -25,8 +36,13 @@ export const WorkoutProvider = ({ children }: WorkOutProviderProps) => {
       const newDate = format(subDays(new Date(date), 1), "yyyy-MM-dd");
 
       setDate(newDate);
-    } else if (direction === "plusDay") {
+    }
+    if (direction === "plusDay") {
       const newDate = format(addDays(new Date(date), 1), "yyyy-MM-dd");
+      setDate(newDate);
+    }
+    if (direction === "today") {
+      const newDate = format(new Date(), "yyyy-MM-dd");
       setDate(newDate);
     }
   };

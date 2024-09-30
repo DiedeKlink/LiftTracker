@@ -121,7 +121,7 @@ export default function AddExercise() {
             <View style={styles.exerciseRow}>
               <Text>{`${item.name} ${item.weight}kg for ${item.reps} reps`}</Text>
               <Button
-                backgroundColor="orange"
+                backgroundColor="#f0f0f0"
                 onPress={() => removeExercise(item.id)}
                 fontSize={16}
                 color="#333"

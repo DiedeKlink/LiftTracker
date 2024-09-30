@@ -23,7 +23,10 @@ export default function TopNavBar() {
         </Pressable>
       </View>
       <View style={styles.rowItem}>
-        <Pressable style={styles.topBarBtn}>
+        <Pressable
+          style={styles.topBarBtn}
+          onPress={() => handleSetDate("today")}
+        >
           <Text style={styles.topBarBtnTxt}>{dateValue}</Text>
         </Pressable>
       </View>
