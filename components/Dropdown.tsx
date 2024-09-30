@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
   import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
   import { Dropdown } from 'react-native-element-dropdown';
- 
+
+  import { useWorkouts, WorkoutProvider, WorkoutContext } from '../context/WorkoutContext';
+
 
   const data = [
     { label: 'Push', value: 'Push' },
@@ -14,11 +16,13 @@ import React, { useState } from 'react';
   ];
 
   const SplitSelectorDropdown = () => {
-    const [value, setValue] = useState<string | null>("Push");
-    const [isFocus, setIsFocus] = useState(false);
+    //const [value, setValue] = useState<string | null>("Push");
 
+    const { split, addSplit } = useWorkouts();
+    const [isFocus, setIsFocus] = useState(false);
+  
     const renderLabel = () => {
-      if (value || isFocus) {
+      if (split || isFocus) {
         return (
           <Text style={[styles.label, isFocus && { color: 'blue' }]}>
             Select Split
@@ -27,7 +31,7 @@ import React, { useState } from 'react';
       }
       return null;
     };
-
+  
     return (
       <SafeAreaView>
         <View  style={styles.container}>
@@ -45,11 +49,11 @@ import React, { useState } from 'react';
           valueField="value"
           placeholder={!isFocus ? 'Select Split' : '...'}
           searchPlaceholder="Search..."
-          value={value}
+          value={split}
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
           onChange={item => {
-            setValue(item.value);
+            addSplit(item.value);
             setIsFocus(false);
           }}
       
