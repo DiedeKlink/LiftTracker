@@ -1,6 +1,6 @@
 import { addDays, format, subDays } from "date-fns";
-import { createContext, useState } from "react";
-import { Workouts } from "../lib/types";
+import { createContext, useEffect, useState } from "react";
+import { Workout, Workouts } from "../lib/types";
 
 type WorkoutContext = {
   split: string | null;
@@ -23,29 +23,60 @@ export const WorkoutProvider = ({ children }: WorkOutProviderProps) => {
 
   const [date, setDate] = useState<string>(format(new Date(), "yyyy-MM-dd"));
 
-  const [workouts, setWorkouts] = useState<Workouts | {}>({});
-
-  let currentWorkout = [];
+  const [workouts, setWorkouts] = useState<Record<string, Workout>>({});
 
   const addSplit = (splits: string) => {
     setSplit(splits);
+
+    const newWorkout = {
+      [date]: {
+        split: splits,
+        exercises: [],
+      },
+    };
+    setWorkouts((prev: Record<string, Workout>) => {
+      if (prev[date]) {
+        return {
+          ...prev,
+          [date]: {
+            ...prev[date],
+            split: splits,
+          },
+        };
+      } else {
+        return {
+          ...prev,
+          ...newWorkout,
+        };
+      }
+    });
   };
 
   const handleSetDate = (direction: string) => {
+    let newDate;
     if (direction === "minusDay") {
-      const newDate = format(subDays(new Date(date), 1), "yyyy-MM-dd");
-
-      setDate(newDate);
+      newDate = format(subDays(new Date(date), 1), "yyyy-MM-dd");
     }
     if (direction === "plusDay") {
-      const newDate = format(addDays(new Date(date), 1), "yyyy-MM-dd");
-      setDate(newDate);
+      newDate = format(addDays(new Date(date), 1), "yyyy-MM-dd");
     }
     if (direction === "today") {
-      const newDate = format(new Date(), "yyyy-MM-dd");
+      newDate = format(new Date(), "yyyy-MM-dd");
+    }
+    if (newDate) {
       setDate(newDate);
     }
   };
+
+  useEffect(() => {
+    setSplit((prev) => {
+      // return workouts[date]?.split || prev;
+      if (workouts[date]) {
+        return workouts[date].split;
+      }
+      return "Push";
+    });
+  }, [date, workouts]);
 
   return (
     <WorkoutContext.Provider

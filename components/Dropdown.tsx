@@ -17,7 +17,7 @@ const data = [
 const SplitSelectorDropdown = () => {
   //const [value, setValue] = useState<string | null>("Push");
 
-  const { split, addSplit } = useWorkoutContext();
+  const { split, addSplit, workouts } = useWorkoutContext();
   const [isFocus, setIsFocus] = useState(false);
 
   const renderLabel = () => {

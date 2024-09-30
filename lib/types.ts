@@ -1,5 +1,4 @@
 export type Workout = {
-  date: string;
   split: string;
   exercises: any;
 };
