@@ -4,19 +4,14 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  TouchableOpacity,
   View,
 } from "react-native";
-import React, { useEffect, useState } from "react";
-
+import React, { useState } from "react";
 import uuid from "react-native-uuid";
-import { format } from "date-fns";
-
 import popularExercises from "../data/popularExercises";
 import Button from "./Button";
-import { setItem } from "../utils/AsyncStorage";
 import { useWorkoutContext } from "../lib/hooks";
-// import { useWorkouts } from "../context/WorkoutContext";
+import { Workout } from "../lib/types";
 
 type Exercise = {
   id: string | number[];
@@ -56,7 +51,7 @@ export default function AddExercise() {
       },
     };
 
-    setWorkouts((prev) => {
+    setWorkouts((prev: Record<string, Workout>) => {
       if (prev[date]) {
         return {
           ...prev,
@@ -84,7 +79,7 @@ export default function AddExercise() {
       (exercise: Exercise) => exercise.id !== exerciseId
     );
 
-    setWorkouts((prev) => {
+    setWorkouts((prev: Record<string, Workout>) => {
       return {
         ...prev,
         [date]: {
@@ -118,19 +113,19 @@ export default function AddExercise() {
       <View>
         <FlatList
           data={workouts[date]?.exercises}
-          renderItem={({ item }: Exercise) => (
+          renderItem={({ item }: { item: Exercise }) => (
             <View style={styles.exerciseRow}>
               <Text>{`${item.name} ${item.weight}kg for ${item.reps} reps`}</Text>
               <Button
                 backgroundColor="#f0f0f0"
-                onPress={() => removeExercise(item.id)}
+                onPress={() => removeExercise(item.id as string)}
                 fontSize={16}
                 color="#333"
                 btnText="Remove"
               />
             </View>
           )}
-          keyExtractor={(item, index) => index}
+          keyExtractor={(item) => item.id.toString()}
           keyboardShouldPersistTaps="handled"
         />
       </View>
@@ -160,15 +155,15 @@ export default function AddExercise() {
           style={[styles.inputStyle, styles.inputRowStyle]}
           placeholder="Weight"
           keyboardType="numeric"
-          onChangeText={setWeight}
-          value={weight}
+          onChangeText={(text) => setWeight(text ? parseFloat(text) : null)}
+          value={weight ? weight.toString() : ""}
         />
         <TextInput
           style={[styles.inputStyle, styles.inputRowStyle, styles.marginLeft]}
           placeholder="Reps"
           keyboardType="numeric"
-          onChangeText={setReps}
-          value={reps}
+          onChangeText={(text) => setReps(text ? parseInt(text) : null)}
+          value={reps ? reps.toString() : ""}
         />
       </View>
 
