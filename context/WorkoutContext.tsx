@@ -7,7 +7,7 @@ type WorkoutContext = {
   addSplit: (splits: string) => void;
   date: string;
   handleSetDate: (direction: string) => void;
-  workouts: any;
+  workouts: Record<string, Workout>;
   setWorkouts: any;
   setSplit: any;
   setDate: any;
@@ -26,7 +26,7 @@ export const WorkoutProvider = ({ children }: WorkOutProviderProps) => {
 
   const [workouts, setWorkouts] = useState<Record<string, Workout>>({
     [date]: {
-      split: split,
+      split: split as string,
       exercises: [],
     },
   });
@@ -73,16 +73,6 @@ export const WorkoutProvider = ({ children }: WorkOutProviderProps) => {
       setDate(newDate);
     }
   };
-
-  // useEffect(() => {
-  //   setSplit((prev) => {
-  //     // return workouts[date]?.split || prev;
-  //     if (workouts[date]) {
-  //       return workouts[date].split;
-  //     }
-  //     return "Push";
-  //   });
-  // }, [date, workouts]);
 
   return (
     <WorkoutContext.Provider

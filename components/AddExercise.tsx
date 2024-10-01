@@ -5,6 +5,7 @@ import {
   Text,
   TextInput,
   View,
+  Dimensions,
 } from "react-native";
 import React, { useState } from "react";
 import uuid from "react-native-uuid";
@@ -21,6 +22,8 @@ type Exercise = {
 };
 
 type ExerciseProps = Exercise[];
+
+const flatlistHeight = Dimensions.get("window").height - 350;
 
 export default function AddExercise() {
   const [exerciseName, setExerciseName] = useState<string>("");
@@ -110,14 +113,17 @@ export default function AddExercise() {
 
   return (
     <>
-      <View>
+      <View style={styles.exerciseContainer}>
         <FlatList
           data={workouts[date]?.exercises}
+          keyExtractor={(item) => item.id.toString()}
+          keyboardShouldPersistTaps="handled"
+          scrollEnabled={true}
           renderItem={({ item }: { item: Exercise }) => (
             <View style={styles.exerciseRow}>
               <Text
                 style={styles.exerciseText}
-              >{`${item.name} ${item.weight}kg for ${item.reps} reps`}</Text>
+              >{`${item.name}: ${item.weight}kg for ${item.reps} reps`}</Text>
               <Button
                 backgroundColor="#f0f0f0"
                 onPress={() => removeExercise(item.id as string)}
@@ -127,58 +133,61 @@ export default function AddExercise() {
               />
             </View>
           )}
-          keyExtractor={(item) => item.id.toString()}
-          keyboardShouldPersistTaps="handled"
         />
       </View>
-      <TextInput
-        style={styles.inputStyle}
-        onChangeText={handleExerciseNameChange}
-        value={exerciseName}
-        placeholder="Exercise Name"
-        maxLength={50}
-      />
+      <View style={styles.fixedInputGroup}>
+        <TextInput
+          style={styles.inputStyle}
+          onChangeText={handleExerciseNameChange}
+          value={exerciseName}
+          placeholder="Exercise Name"
+          maxLength={50}
+        />
 
-      {filteredExercises.length > 0 && (
-        <View style={styles.autocompleteContainer}>
-          <View style={styles.dropdown}>
-            <View>
-              {filteredExercises.map((exercise, index) => (
-                <Pressable key={index} onPress={() => selectExercise(exercise)}>
-                  <Text style={styles.dropdownItem}>{exercise}</Text>
-                </Pressable>
-              ))}
+        {filteredExercises.length > 0 && (
+          <View style={styles.autocompleteContainer}>
+            <View style={styles.dropdown}>
+              <View>
+                {filteredExercises.map((exercise, index) => (
+                  <Pressable
+                    key={index}
+                    onPress={() => selectExercise(exercise)}
+                  >
+                    <Text style={styles.dropdownItem}>{exercise}</Text>
+                  </Pressable>
+                ))}
+              </View>
             </View>
           </View>
-        </View>
-      )}
+        )}
 
-      <View style={styles.row}>
-        <TextInput
-          style={[styles.inputStyle, styles.inputRowStyle]}
-          placeholder="Weight"
-          keyboardType="numeric"
-          onChangeText={(text) => setWeight(text ? parseFloat(text) : null)}
-          value={weight ? weight.toString() : ""}
-          maxLength={4}
-        />
-        <TextInput
-          style={[styles.inputStyle, styles.inputRowStyle, styles.marginLeft]}
-          placeholder="Reps"
-          keyboardType="numeric"
-          onChangeText={(text) => setReps(text ? parseInt(text) : null)}
-          value={reps ? reps.toString() : ""}
-          maxLength={3}
+        <View style={styles.row}>
+          <TextInput
+            style={[styles.inputStyle, styles.inputRowStyle]}
+            placeholder="Weight"
+            keyboardType="numeric"
+            onChangeText={(text) => setWeight(text ? parseFloat(text) : null)}
+            value={weight ? weight.toString() : ""}
+            maxLength={4}
+          />
+          <TextInput
+            style={[styles.inputStyle, styles.inputRowStyle, styles.marginLeft]}
+            placeholder="Reps"
+            keyboardType="numeric"
+            onChangeText={(text) => setReps(text ? parseInt(text) : null)}
+            value={reps ? reps.toString() : ""}
+            maxLength={3}
+          />
+        </View>
+
+        <Button
+          backgroundColor="#32a852"
+          onPress={addNewExercise}
+          fontSize={16}
+          color="#fff"
+          btnText="Add Exercise"
         />
       </View>
-
-      <Button
-        backgroundColor="#32a852"
-        onPress={addNewExercise}
-        fontSize={16}
-        color="#fff"
-        btnText="Add Exercise"
-      />
     </>
   );
 }
@@ -191,6 +200,9 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 8,
     marginTop: 10,
+  },
+  exerciseContainer: {
+    height: flatlistHeight,
   },
   btnStyle: {
     backgroundColor: "#32a852",
@@ -212,6 +224,17 @@ const styles = StyleSheet.create({
     flex: 1,
     flexGrow: 1,
   },
+  fixedInputGroup: {
+    position: "absolute",
+    width: "100%",
+    backgroundColor: "#fff",
+    bottom: 0,
+
+    left: 12,
+    right: 0,
+
+    justifyContent: "center",
+  },
   marginLeft: {
     marginLeft: 12,
   },
@@ -220,6 +243,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     //width: '50%'
+    maxHeight: 100,
+    overflow: "scroll",
   },
   exerciseText: {
     fontSize: 16,
