@@ -3,11 +3,13 @@ import { createContext, useEffect, useState } from "react";
 import { Workout, Workouts } from "../lib/types";
 import { getItem, setItem } from "../utils/AsyncStorage";
 
+type DirectionProps = "minusDay" | "plusDay" | "today";
+
 type WorkoutContext = {
   split: string | null;
   addSplit: (splits: string) => void;
   date: string;
-  handleSetDate: (direction: string) => void;
+  handleSetDate: (direction: DirectionProps) => void;
   workouts: Record<string, Workout>;
   setWorkouts: any;
   setSplit: any;
@@ -71,7 +73,7 @@ export const WorkoutProvider = ({ children }: WorkOutProviderProps) => {
     });
   };
 
-  const handleSetDate = (direction: string) => {
+  const handleSetDate = (direction: DirectionProps) => {
     let newDate;
     if (direction === "minusDay") {
       newDate = format(subDays(new Date(date), 1), "yyyy-MM-dd");

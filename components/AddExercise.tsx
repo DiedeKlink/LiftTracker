@@ -7,13 +7,14 @@ import {
   View,
   Dimensions,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import uuid from "react-native-uuid";
-import popularExercises from "../data/popularExercises";
+import { popularExercises } from "../data/popularExercises";
 import Button from "./Button";
 import { useWorkoutContext } from "../lib/hooks";
 import { Workout } from "../lib/types";
 import Icon from "react-native-vector-icons/Feather";
+import { getItem, setItem } from "../utils/AsyncStorage";
 
 type Exercise = {
   id: string | number[];
@@ -33,7 +34,19 @@ export default function AddExercise() {
 
   const [filteredExercises, setFilteredExercises] = useState<string[]>([]);
 
+  const [userExercises, setUserExercises] = useState([]);
+
+  useEffect(() => {
+    getItem("userExercises").then((data) => {
+      if (data) {
+        setUserExercises(JSON.parse(data));
+      }
+    });
+  }, []);
+
   const { date, workouts, setWorkouts, split } = useWorkoutContext();
+
+  const totalExercises = [...popularExercises, ...userExercises];
 
   const addNewExercise = () => {
     if (exerciseName === "" || weight === null || reps === null) {
@@ -72,9 +85,27 @@ export default function AddExercise() {
       }
     });
 
+    if (
+      !popularExercises.includes(exerciseName) &&
+      !userExercises.includes(exerciseName)
+    ) {
+      setUserExercises((prev) => [...prev, exerciseName]);
+    }
+
+    console.log(totalExercises);
+
     setExerciseName("");
     setWeight(null);
     setReps(null);
+    setFilteredExercises([]);
+  };
+
+  useEffect(() => {
+    setItem("userExercises", JSON.stringify(userExercises));
+  }, [workouts]);
+
+  const removeUserExercise = (exercise: string) => {
+    setUserExercises((prev) => prev.filter((ex) => ex !== exercise));
     setFilteredExercises([]);
   };
 
@@ -101,9 +132,10 @@ export default function AddExercise() {
 
   const handleExerciseNameChange = (text: string) => {
     setExerciseName(text);
+
     if (text) {
       setFilteredExercises(
-        popularExercises.filter((exercise) =>
+        totalExercises.filter((exercise) =>
           exercise.toLowerCase().includes(text.toLowerCase())
         )
       );
@@ -151,14 +183,24 @@ export default function AddExercise() {
         {filteredExercises.length > 0 && (
           <View style={styles.autocompleteContainer}>
             <View style={styles.dropdown}>
-              <View>
+              <View style={styles.filteredExercisesContainer}>
                 {filteredExercises.map((exercise, index) => (
-                  <Pressable
-                    key={index}
-                    onPress={() => selectExercise(exercise)}
-                  >
-                    <Text style={styles.dropdownItem}>{exercise}</Text>
-                  </Pressable>
+                  <View key={index} style={styles.filteredExercise}>
+                    <Pressable
+                      style={styles.dropdownItem}
+                      onPress={() => selectExercise(exercise)}
+                    >
+                      <Text>{exercise}</Text>
+                    </Pressable>
+                    {userExercises.includes(exercise) && (
+                      <Pressable
+                        onPress={() => removeUserExercise(exercise)}
+                        style={styles.filteredExerciseRmvBtn}
+                      >
+                        <Icon name="x" size={15} color="#333" />
+                      </Pressable>
+                    )}
+                  </View>
                 ))}
               </View>
             </View>
@@ -198,6 +240,28 @@ export default function AddExercise() {
 }
 
 const styles = StyleSheet.create({
+  filteredExerciseRmvBtn: {
+    paddingVertical: 5,
+    borderRadius: 8,
+    paddingHorizontal: 5,
+    backgroundColor: "#f0f0f0",
+    fontSize: 16,
+    color: "#333",
+    marginRight: 5,
+    maxHeight: 30,
+    marginTop: 5,
+  },
+  filteredExercise: {
+    width: "50%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    position: "relative",
+  },
+  filteredExercisesContainer: {
+    flex: 1,
+    flexDirection: "row",
+    flexWrap: "wrap",
+  },
   inputStyle: {
     height: 50,
     borderColor: "gray",
@@ -276,6 +340,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: "#DDDDDD",
+    flexGrow: 1,
   },
   autocompleteContainer: {
     position: "relative",
