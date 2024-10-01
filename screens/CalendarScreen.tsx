@@ -3,8 +3,13 @@ import { Calendar, CalendarList, Agenda } from "react-native-calendars";
 import { useWorkoutContext } from "../lib/hooks";
 import { format } from "date-fns";
 import Button from "../components/Button";
+import { RootStackParamList } from "../App";
 
-export default function CalendarScreen({ navigation }) {
+import type { StackScreenProps } from "@react-navigation/stack";
+
+type Props = StackScreenProps<RootStackParamList, "Calendar">;
+
+export default function CalendarScreen({ navigation }: Props) {
   const { setDate, workouts } = useWorkoutContext();
 
   const filteredWorkoutDates = Object.keys(workouts)
@@ -13,9 +18,10 @@ export default function CalendarScreen({ navigation }) {
       dateString: date,
       split: workouts[date].split,
     }));
-  const workoutDates = filteredWorkoutDates;
 
-  const markedDates = Object.keys(workouts).reduce((acc, curr) => {
+  const markedDates = Object.keys(workouts).reduce<
+    Record<string, { marked: boolean }>
+  >((acc, curr) => {
     if (workouts[curr].exercises.length === 0) {
       return acc;
     }
@@ -23,16 +29,25 @@ export default function CalendarScreen({ navigation }) {
     return acc;
   }, {});
 
-  const handleDayPress = (day) => {
+  const handleBtnPress = (day: string) => {
     setDate(day);
+    navigation.navigate("Workouts");
+  };
+
+  const handleDayPress = (day) => {
+    setDate(day.dateString);
     navigation.navigate("Workouts");
   };
 
   return (
     <View style={styles.container}>
-      <Calendar markedDates={markedDates} style={styles.calendar} />
+      <Calendar
+        markedDates={markedDates}
+        style={styles.calendar}
+        onDayPress={handleDayPress}
+      />
       <FlatList
-        data={workoutDates}
+        data={filteredWorkoutDates}
         renderItem={({ item }) => (
           <View style={styles.dayContainer}>
             <Text style={styles.dayText}>
@@ -50,7 +65,7 @@ export default function CalendarScreen({ navigation }) {
               backgroundColor="#f0f0f0"
               fontSize={16}
               color="#333"
-              onPress={() => handleDayPress(item.dateString)}
+              onPress={() => handleBtnPress(item.dateString)}
             >
               View Workout
             </Button>

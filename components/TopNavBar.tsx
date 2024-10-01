@@ -5,8 +5,12 @@ import Icon from "react-native-vector-icons/FontAwesome";
 
 import { format } from "date-fns";
 import { useWorkoutContext } from "../lib/hooks";
+import { StackScreenProps } from "@react-navigation/stack";
+import { RootStackParamList } from "../App";
 
-export default function TopNavBar({ navigation }) {
+type Props = StackScreenProps<RootStackParamList, "Workouts">;
+
+export default function TopNavBar({ navigation }: Props) {
   const { date, handleSetDate } = useWorkoutContext();
 
   let dateValue = format(new Date(date), "EEEE, d MMM");

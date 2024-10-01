@@ -9,10 +9,13 @@ import { createStackNavigator } from "@react-navigation/stack";
 import CalendarScreen from "./screens/CalendarScreen";
 import WorkoutScreen from "./screens/WorkoutScreen";
 
-const Stack = createStackNavigator();
-const screenOptions = {
-  headerShown: false,
+export type RootStackParamList = {
+  Workouts: undefined;
+  Calendar: undefined;
 };
+
+const Stack = createStackNavigator<RootStackParamList>();
+
 export default function App() {
   return (
     <SafeAreaProvider>
