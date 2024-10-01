@@ -1,37 +1,33 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
-import SplitSelectorDropdown from "./components/Dropdown";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import AddExercise from "./components/AddExercise";
-import TopNavBar from "./components/TopNavBar";
+import React from "react";
 
-import { createContext, useState } from "react";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+
 import { WorkoutProvider } from "./context/WorkoutContext";
 
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import CalendarScreen from "./screens/CalendarScreen";
+import WorkoutScreen from "./screens/WorkoutScreen";
+
+const Stack = createStackNavigator();
+const screenOptions = {
+  headerShown: false,
+};
 export default function App() {
   return (
     <SafeAreaProvider>
       <WorkoutProvider>
-        <SafeAreaView style={styles.safeContainer}>
-          <StatusBar />
-          <TopNavBar />
-          <View style={styles.container}>
-            <SplitSelectorDropdown />
-            <AddExercise />
-          </View>
-        </SafeAreaView>
+        <NavigationContainer>
+          <Stack.Navigator>
+            <Stack.Screen
+              name="Workouts"
+              component={WorkoutScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen name="Calendar" component={CalendarScreen} />
+          </Stack.Navigator>
+        </NavigationContainer>
       </WorkoutProvider>
     </SafeAreaProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  safeContainer: {
-    flex: 1,
-  },
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    paddingHorizontal: 12,
-  },
-});

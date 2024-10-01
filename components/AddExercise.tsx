@@ -115,7 +115,9 @@ export default function AddExercise() {
           data={workouts[date]?.exercises}
           renderItem={({ item }: { item: Exercise }) => (
             <View style={styles.exerciseRow}>
-              <Text>{`${item.name} ${item.weight}kg for ${item.reps} reps`}</Text>
+              <Text
+                style={styles.exerciseText}
+              >{`${item.name} ${item.weight}kg for ${item.reps} reps`}</Text>
               <Button
                 backgroundColor="#f0f0f0"
                 onPress={() => removeExercise(item.id as string)}
@@ -134,6 +136,7 @@ export default function AddExercise() {
         onChangeText={handleExerciseNameChange}
         value={exerciseName}
         placeholder="Exercise Name"
+        maxLength={50}
       />
 
       {filteredExercises.length > 0 && (
@@ -157,6 +160,7 @@ export default function AddExercise() {
           keyboardType="numeric"
           onChangeText={(text) => setWeight(text ? parseFloat(text) : null)}
           value={weight ? weight.toString() : ""}
+          maxLength={4}
         />
         <TextInput
           style={[styles.inputStyle, styles.inputRowStyle, styles.marginLeft]}
@@ -164,6 +168,7 @@ export default function AddExercise() {
           keyboardType="numeric"
           onChangeText={(text) => setReps(text ? parseInt(text) : null)}
           value={reps ? reps.toString() : ""}
+          maxLength={3}
         />
       </View>
 
@@ -215,6 +220,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     //width: '50%'
+  },
+  exerciseText: {
+    fontSize: 16,
+    marginTop: 17,
   },
   dropdown: {
     position: "absolute",

@@ -5,8 +5,11 @@ import Icon from "react-native-vector-icons/FontAwesome";
 
 import { format } from "date-fns";
 import { useWorkoutContext } from "../lib/hooks";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faCog } from "@fortawesome/free-solid-svg-icons";
 
-export default function TopNavBar() {
+export default function TopNavBar({ navigation }) {
   const { date, handleSetDate } = useWorkoutContext();
 
   const dateValue = format(new Date(date), "dd-MM-yyyy");
@@ -23,12 +26,16 @@ export default function TopNavBar() {
           </Text>
         </Pressable>
       </View>
-      <View style={styles.rowItem}>
+      <View style={[styles.rowItem, styles.flexRow]}>
         <Pressable
           style={styles.topBarBtn}
           onPress={() => handleSetDate("today")}
         >
-          <Text style={styles.topBarBtnTxt}>{dateValue}</Text>
+          <Text style={styles.topBarBtnTxt}>{dateValue} </Text>
+        </Pressable>
+
+        <Pressable onPress={() => navigation.navigate("Calendar")}>
+          <Icon name="calendar" size={30} color="#333" />
         </Pressable>
       </View>
       <View style={styles.rowItem}>
@@ -56,6 +63,11 @@ const styles = StyleSheet.create({
   },
   rowItem: {
     flexGrow: 1,
+  },
+  flexRow: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
   },
   topBarBtnTxt: {
     textAlign: "center",

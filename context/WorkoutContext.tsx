@@ -10,6 +10,7 @@ type WorkoutContext = {
   workouts: any;
   setWorkouts: any;
   setSplit: any;
+  setDate: any;
 };
 
 export const WorkoutContext = createContext<WorkoutContext | null>(null);
@@ -93,6 +94,7 @@ export const WorkoutProvider = ({ children }: WorkOutProviderProps) => {
         workouts,
         setWorkouts,
         setSplit,
+        setDate,
       }}
     >
       {children}
