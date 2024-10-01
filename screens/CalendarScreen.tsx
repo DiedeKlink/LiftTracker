@@ -15,8 +15,6 @@ export default function CalendarScreen({ navigation }) {
     }));
   const workoutDates = filteredWorkoutDates;
 
-  console.log(workoutDates);
-
   const markedDates = Object.keys(workouts).reduce((acc, curr) => {
     if (workouts[curr].exercises.length === 0) {
       return acc;

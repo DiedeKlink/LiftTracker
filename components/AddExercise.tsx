@@ -112,11 +112,13 @@ export default function AddExercise() {
     }
   };
 
+  const reversedExercises = [...(workouts[date]?.exercises || [])].reverse();
+
   return (
     <>
       <View style={styles.exerciseContainer}>
         <FlatList
-          data={workouts[date]?.exercises.reverse()}
+          data={reversedExercises}
           keyExtractor={(item) => item.id.toString()}
           keyboardShouldPersistTaps="handled"
           scrollEnabled={true}
@@ -131,7 +133,7 @@ export default function AddExercise() {
                 fontSize={16}
                 color="#333"
               >
-                <Icon name="x" size={25} color="#333" />
+                <Icon name="x" size={15} color="#333" />
               </Button>
             </View>
           )}
@@ -257,7 +259,7 @@ const styles = StyleSheet.create({
   },
   exerciseText: {
     fontSize: 16,
-    marginTop: 20,
+    marginTop: 15,
   },
   dropdown: {
     position: "absolute",

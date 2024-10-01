@@ -36,7 +36,6 @@ export const WorkoutProvider = ({ children }: WorkOutProviderProps) => {
     getItem("workouts").then((data) => {
       if (data) {
         setWorkouts(JSON.parse(data));
-        console.log(data);
       }
     });
   }, []);
