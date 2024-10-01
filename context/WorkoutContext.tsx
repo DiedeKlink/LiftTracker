@@ -1,6 +1,7 @@
 import { addDays, format, subDays } from "date-fns";
 import { createContext, useEffect, useState } from "react";
 import { Workout, Workouts } from "../lib/types";
+import { getItem, setItem } from "../utils/AsyncStorage";
 
 type WorkoutContext = {
   split: string | null;
@@ -30,6 +31,19 @@ export const WorkoutProvider = ({ children }: WorkOutProviderProps) => {
       exercises: [],
     },
   });
+
+  useEffect(() => {
+    getItem("workouts").then((data) => {
+      if (data) {
+        setWorkouts(JSON.parse(data));
+        console.log(data);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    setItem("workouts", JSON.stringify(workouts));
+  }, [workouts]);
 
   const addSplit = (splits: string) => {
     setSplit(splits);
