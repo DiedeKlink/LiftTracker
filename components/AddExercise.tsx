@@ -116,7 +116,7 @@ export default function AddExercise() {
     <>
       <View style={styles.exerciseContainer}>
         <FlatList
-          data={workouts[date]?.exercises}
+          data={workouts[date].exercises.reverse()}
           keyExtractor={(item) => item.id.toString()}
           keyboardShouldPersistTaps="handled"
           scrollEnabled={true}
@@ -206,6 +206,10 @@ const styles = StyleSheet.create({
   },
   exerciseContainer: {
     height: flatlistHeight,
+    borderColor: "gray",
+    borderWidth: 0.5,
+    borderRadius: 8,
+    padding: 12,
   },
   btnStyle: {
     backgroundColor: "#32a852",
@@ -248,10 +252,12 @@ const styles = StyleSheet.create({
     //width: '50%'
     maxHeight: 100,
     overflow: "scroll",
+    borderBottomColor: "gray",
+    borderBottomWidth: 0.5,
   },
   exerciseText: {
     fontSize: 16,
-    marginTop: 17,
+    marginTop: 20,
   },
   dropdown: {
     position: "absolute",
