@@ -37,7 +37,13 @@ export default function CalendarScreen({ navigation }) {
           <View style={styles.dayContainer}>
             <Text style={styles.dayText}>
               {" "}
-              {format(new Date(item.dateString), "dd-MM-yyyy")}
+              {item.dateString === format(new Date(), "yyyy-MM-dd")
+                ? "Today"
+                : item.dateString ===
+                  format(new Date(Date.now() - 86400000), "yyyy-MM-dd")
+                ? "Yesterday"
+                : format(new Date(item.dateString), "EE, dd MMM")}
+              {/* {format(new Date(item.dateString), "dd-MM-yyyy")} */}
             </Text>
             <Text style={styles.splitText}>Split: {item.split}</Text>
             <Button
@@ -85,6 +91,7 @@ const styles = StyleSheet.create({
   dayText: {
     fontSize: 16,
     marginRight: 10,
+    minWidth: 100,
   },
   splitText: {
     fontSize: 16,
