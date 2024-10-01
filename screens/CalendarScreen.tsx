@@ -80,6 +80,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "lightgray",
     borderBottomWidth: 1,
     paddingBottom: 10,
+    justifyContent: "space-between",
   },
   dayText: {
     fontSize: 16,

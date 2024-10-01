@@ -9,7 +9,18 @@ import { useWorkoutContext } from "../lib/hooks";
 export default function TopNavBar({ navigation }) {
   const { date, handleSetDate } = useWorkoutContext();
 
-  const dateValue = format(new Date(date), "dd-MM-yyyy");
+  let dateValue = format(new Date(date), "EEEE, d MMM");
+
+  const today = format(new Date(), "EEEE, d MMM");
+  if (dateValue === today) {
+    dateValue = "Today";
+  }
+  const yesterday = format(new Date(Date.now() - 86400000), "EEEE, d MMM");
+  if (dateValue === yesterday) {
+    dateValue = "Yesterday";
+  }
+
+  //  const dateValue = format(new Date(date), "dd-MM-yyyy");
 
   return (
     <View style={styles.container}>
@@ -32,7 +43,12 @@ export default function TopNavBar({ navigation }) {
         </Pressable>
 
         <Pressable onPress={() => navigation.navigate("Calendar")}>
-          <Icon name="calendar" size={30} color="#333" />
+          <Icon
+            name="calendar"
+            size={30}
+            color="#333"
+            style={{ marginLeft: 15 }}
+          />
         </Pressable>
       </View>
       <View style={styles.rowItem}>
