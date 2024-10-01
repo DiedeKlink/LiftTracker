@@ -116,7 +116,7 @@ export default function AddExercise() {
     <>
       <View style={styles.exerciseContainer}>
         <FlatList
-          data={workouts[date].exercises.reverse()}
+          data={workouts[date]?.exercises.reverse()}
           keyExtractor={(item) => item.id.toString()}
           keyboardShouldPersistTaps="handled"
           scrollEnabled={true}
