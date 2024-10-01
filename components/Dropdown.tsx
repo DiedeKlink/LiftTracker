@@ -17,7 +17,7 @@ const data = [
 const SplitSelectorDropdown = () => {
   //const [value, setValue] = useState<string | null>("Push");
 
-  const { split, addSplit, workouts } = useWorkoutContext();
+  const { split, addSplit, workouts, date } = useWorkoutContext();
   const [isFocus, setIsFocus] = useState(false);
 
   const renderLabel = () => {
@@ -30,6 +30,12 @@ const SplitSelectorDropdown = () => {
     }
     return null;
   };
+
+  let splitValue = "Push";
+
+  if (workouts[date]) {
+    splitValue = workouts[date].split;
+  }
 
   return (
     <SafeAreaView>
@@ -47,7 +53,7 @@ const SplitSelectorDropdown = () => {
           valueField="value"
           placeholder={!isFocus ? "Select Split" : "..."}
           searchPlaceholder="Search..."
-          value={split}
+          value={splitValue}
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
           onChange={(item) => {

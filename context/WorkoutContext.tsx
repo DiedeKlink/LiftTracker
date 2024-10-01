@@ -23,7 +23,12 @@ export const WorkoutProvider = ({ children }: WorkOutProviderProps) => {
 
   const [date, setDate] = useState<string>(format(new Date(), "yyyy-MM-dd"));
 
-  const [workouts, setWorkouts] = useState<Record<string, Workout>>({});
+  const [workouts, setWorkouts] = useState<Record<string, Workout>>({
+    [date]: {
+      split: split,
+      exercises: [],
+    },
+  });
 
   const addSplit = (splits: string) => {
     setSplit(splits);
@@ -68,15 +73,15 @@ export const WorkoutProvider = ({ children }: WorkOutProviderProps) => {
     }
   };
 
-  useEffect(() => {
-    setSplit((prev) => {
-      // return workouts[date]?.split || prev;
-      if (workouts[date]) {
-        return workouts[date].split;
-      }
-      return "Push";
-    });
-  }, [date, workouts]);
+  // useEffect(() => {
+  //   setSplit((prev) => {
+  //     // return workouts[date]?.split || prev;
+  //     if (workouts[date]) {
+  //       return workouts[date].split;
+  //     }
+  //     return "Push";
+  //   });
+  // }, [date, workouts]);
 
   return (
     <WorkoutContext.Provider
