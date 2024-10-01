@@ -46,9 +46,10 @@ export default function CalendarScreen({ navigation }) {
               backgroundColor="#f0f0f0"
               fontSize={16}
               color="#333"
-              btnText="View Workout"
               onPress={() => handleDayPress(item.dateString)}
-            />
+            >
+              View Workout
+            </Button>
           </View>
         )}
         keyExtractor={(item) => item.dateString}

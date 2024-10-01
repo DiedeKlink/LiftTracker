@@ -13,6 +13,7 @@ import popularExercises from "../data/popularExercises";
 import Button from "./Button";
 import { useWorkoutContext } from "../lib/hooks";
 import { Workout } from "../lib/types";
+import Icon from "react-native-vector-icons/Feather";
 
 type Exercise = {
   id: string | number[];
@@ -129,8 +130,9 @@ export default function AddExercise() {
                 onPress={() => removeExercise(item.id as string)}
                 fontSize={16}
                 color="#333"
-                btnText="Remove"
-              />
+              >
+                <Icon name="x" size={25} color="#333" />
+              </Button>
             </View>
           )}
         />
@@ -185,8 +187,9 @@ export default function AddExercise() {
           onPress={addNewExercise}
           fontSize={16}
           color="#fff"
-          btnText="Add Exercise"
-        />
+        >
+          Add Exercise
+        </Button>
       </View>
     </>
   );

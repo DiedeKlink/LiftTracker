@@ -5,9 +5,6 @@ import Icon from "react-native-vector-icons/FontAwesome";
 
 import { format } from "date-fns";
 import { useWorkoutContext } from "../lib/hooks";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faCog } from "@fortawesome/free-solid-svg-icons";
 
 export default function TopNavBar({ navigation }) {
   const { date, handleSetDate } = useWorkoutContext();
