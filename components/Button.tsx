@@ -7,6 +7,7 @@ type ButtonProps = {
   color: string;
   onPress: () => void;
   children: React.ReactNode;
+  style?: any;
 };
 
 export default function Button({
@@ -15,10 +16,11 @@ export default function Button({
   color,
   onPress,
   children,
+  style,
 }: ButtonProps) {
   return (
     <Pressable
-      style={[styles.btnStyle, { backgroundColor: backgroundColor }]}
+      style={[styles.btnStyle, { backgroundColor: backgroundColor }, style]}
       onPress={onPress}
     >
       <Text style={[styles.btnText, { color: color, fontSize: fontSize }]}>

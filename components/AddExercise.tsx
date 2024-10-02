@@ -1,31 +1,13 @@
-import {
-  FlatList,
-  Pressable,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-  Dimensions,
-} from "react-native";
+import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import uuid from "react-native-uuid";
 import { popularExercises } from "../data/popularExercises";
 import Button from "./Button";
 import { useWorkoutContext } from "../lib/hooks";
-import { Workout } from "../lib/types";
+import { Exercise, Workout } from "../lib/types";
 import Icon from "react-native-vector-icons/Feather";
 import { getItem, setItem } from "../utils/AsyncStorage";
-
-type Exercise = {
-  id: string | number[];
-  name: string;
-  weight: number;
-  reps: number;
-};
-
-type ExerciseProps = Exercise[];
-
-const flatlistHeight = Dimensions.get("window").height - 350;
+import ExerciseContainer from "./ExerciseContainer";
 
 export default function AddExercise() {
   const [exerciseName, setExerciseName] = useState<string>("");
@@ -34,7 +16,7 @@ export default function AddExercise() {
 
   const [filteredExercises, setFilteredExercises] = useState<string[]>([]);
 
-  const [userExercises, setUserExercises] = useState([]);
+  const [userExercises, setUserExercises] = useState<string[]>([]);
 
   useEffect(() => {
     getItem("userExercises").then((data) => {
@@ -55,20 +37,24 @@ export default function AddExercise() {
     }
     //const newExercise = `${exerciseName} ${weight}kg for ${reps} reps`
     const newExercise = {
-      id: uuid.v4(),
+      id: uuid.v4().toString(),
       name: exerciseName,
-      weight: weight,
-      reps: reps,
+      sets: [
+        {
+          weight: weight,
+          reps: reps,
+        },
+      ],
     };
 
     const newWorkout = {
       [date]: {
-        split: split,
+        split: split || "",
         exercises: [newExercise],
       },
     };
 
-    setWorkouts((prev: Record<string, Workout>) => {
+    setWorkouts((prev) => {
       if (prev[date]) {
         return {
           ...prev,
@@ -92,8 +78,6 @@ export default function AddExercise() {
       setUserExercises((prev) => [...prev, exerciseName]);
     }
 
-    console.log(totalExercises);
-
     setExerciseName("");
     setWeight(null);
     setReps(null);
@@ -107,22 +91,6 @@ export default function AddExercise() {
   const removeUserExercise = (exercise: string) => {
     setUserExercises((prev) => prev.filter((ex) => ex !== exercise));
     setFilteredExercises([]);
-  };
-
-  const removeExercise = (exerciseId: string) => {
-    const updatedExercises = workouts[date].exercises.filter(
-      (exercise: Exercise) => exercise.id !== exerciseId
-    );
-
-    setWorkouts((prev: Record<string, Workout>) => {
-      return {
-        ...prev,
-        [date]: {
-          ...prev[date],
-          exercises: updatedExercises,
-        },
-      };
-    });
   };
 
   const selectExercise = (exercise: string) => {
@@ -146,31 +114,15 @@ export default function AddExercise() {
 
   const reversedExercises = [...(workouts[date]?.exercises || [])].reverse();
 
+  const formattedExercises: Exercise[] = reversedExercises.map((exercise) => ({
+    name: exercise.name,
+    sets: exercise.sets,
+    id: exercise.id,
+  }));
+
   return (
     <>
-      <View style={styles.exerciseContainer}>
-        <FlatList
-          data={reversedExercises}
-          keyExtractor={(item) => item.id.toString()}
-          keyboardShouldPersistTaps="handled"
-          scrollEnabled={true}
-          renderItem={({ item }: { item: Exercise }) => (
-            <View style={styles.exerciseRow}>
-              <Text
-                style={styles.exerciseText}
-              >{`${item.name}: ${item.weight}kg for ${item.reps} reps`}</Text>
-              <Button
-                backgroundColor="#f0f0f0"
-                onPress={() => removeExercise(item.id as string)}
-                fontSize={16}
-                color="#333"
-              >
-                <Icon name="x" size={15} color="#333" />
-              </Button>
-            </View>
-          )}
-        />
-      </View>
+      <ExerciseContainer data={formattedExercises} />
       <View style={styles.fixedInputGroup}>
         <TextInput
           style={styles.inputStyle}
@@ -256,6 +208,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     position: "relative",
+    backgroundColor: "#fff",
   },
   filteredExercisesContainer: {
     flex: 1,
@@ -270,13 +223,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     marginTop: 10,
   },
-  exerciseContainer: {
-    height: flatlistHeight,
-    borderColor: "gray",
-    borderWidth: 0.5,
-    borderRadius: 8,
-    padding: 12,
-  },
+
   btnStyle: {
     backgroundColor: "#32a852",
     paddingVertical: 10,
@@ -311,20 +258,7 @@ const styles = StyleSheet.create({
   marginLeft: {
     marginLeft: 12,
   },
-  exerciseRow: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    //width: '50%'
-    maxHeight: 100,
-    overflow: "scroll",
-    borderBottomColor: "gray",
-    borderBottomWidth: 0.5,
-  },
-  exerciseText: {
-    fontSize: 16,
-    marginTop: 15,
-  },
+
   dropdown: {
     position: "absolute",
     width: "100%",
@@ -347,5 +281,49 @@ const styles = StyleSheet.create({
     width: "100%",
     top: 0,
     borderRadius: 8,
+    zIndex: 1000,
+    //backgroundColor: "#fff",
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+    height: "100%",
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 5,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonOpen: {
+    backgroundColor: "#F194FF",
+  },
+  buttonClose: {
+    backgroundColor: "#2196F3",
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
   },
 });

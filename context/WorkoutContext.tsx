@@ -1,6 +1,6 @@
 import { addDays, format, subDays } from "date-fns";
 import { createContext, useEffect, useState } from "react";
-import { Workout, Workouts } from "../lib/types";
+import { Workout } from "../lib/types";
 import { getItem, setItem } from "../utils/AsyncStorage";
 
 type DirectionProps = "minusDay" | "plusDay" | "today";
@@ -11,9 +11,9 @@ type WorkoutContext = {
   date: string;
   handleSetDate: (direction: DirectionProps) => void;
   workouts: Record<string, Workout>;
-  setWorkouts: any;
-  setSplit: any;
-  setDate: any;
+  setWorkouts: React.Dispatch<React.SetStateAction<Record<string, Workout>>>;
+  setSplit: React.Dispatch<React.SetStateAction<string | null>>;
+  setDate: React.Dispatch<React.SetStateAction<string>>;
 };
 
 export const WorkoutContext = createContext<WorkoutContext | null>(null);
