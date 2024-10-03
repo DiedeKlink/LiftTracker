@@ -10,10 +10,10 @@ import Icon from "react-native-vector-icons/Feather";
 
 import Button from "./Button";
 import { useWorkoutContext } from "../lib/hooks";
-import { Exercise, Workout } from "../lib/types";
+import { Exercise } from "../lib/types";
 import { useRef } from "react";
+
 import ModalComponent, { ModalRef } from "./ModalAddSet";
-import { set } from "date-fns";
 
 const flatlistHeight = Dimensions.get("window").height - 350;
 

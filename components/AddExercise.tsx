@@ -4,7 +4,7 @@ import uuid from "react-native-uuid";
 import { popularExercises } from "../data/popularExercises";
 import Button from "./Button";
 import { useWorkoutContext } from "../lib/hooks";
-import { Exercise, Workout } from "../lib/types";
+import { Exercise } from "../lib/types";
 import Icon from "react-native-vector-icons/Feather";
 import { getItem, setItem } from "../utils/AsyncStorage";
 import ExerciseContainer from "./ExerciseContainer";
