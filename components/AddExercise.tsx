@@ -35,7 +35,7 @@ export default function AddExercise() {
       alert("Fill in all fields");
       return false;
     }
-    //const newExercise = `${exerciseName} ${weight}kg for ${reps} reps`
+
     const newExercise = {
       id: uuid.v4().toString(),
       name: exerciseName,

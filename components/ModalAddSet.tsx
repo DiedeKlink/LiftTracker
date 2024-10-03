@@ -6,7 +6,6 @@ import { useWorkoutContext } from "../lib/hooks";
 import Button from "./Button";
 import { Exercise, Workout } from "../lib/types";
 
-// This is the ref interface that will be exposed to parent.
 export interface ModalRef {
   openModal: (data: Exercise) => void;
 }
@@ -20,18 +19,15 @@ const ModalComponent = forwardRef<ModalRef, {}>((props, ref) => {
 
   const { date, workouts, setWorkouts } = useWorkoutContext();
 
-  // This function will be callable by the parent component.
   const openModal = (data: Exercise) => {
-    setModalData(data); // Use the data passed by parent.
+    setModalData(data);
     setIsVisible(true);
   };
 
-  // This function will be callable by the parent component.
   const closeModal = () => {
     setIsVisible(false);
   };
 
-  // Expose the `openModal` and `closeModal` functions to parent component.
   useImperativeHandle(ref, () => ({
     openModal,
     closeModal,
