@@ -24,8 +24,6 @@ const ModalComponent = forwardRef<ModalRef, {}>((props, ref) => {
   const openModal = (data: Exercise) => {
     setModalData(data); // Use the data passed by parent.
     setIsVisible(true);
-
-    console.log(data);
   };
 
   // This function will be callable by the parent component.
@@ -61,7 +59,7 @@ const ModalComponent = forwardRef<ModalRef, {}>((props, ref) => {
       }
     });
 
-    setWorkouts((prev: Record<string, Workout>) => {
+    setWorkouts((prev) => {
       return {
         ...prev,
         [date]: {

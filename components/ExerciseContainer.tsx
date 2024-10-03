@@ -13,6 +13,7 @@ import { useWorkoutContext } from "../lib/hooks";
 import { Exercise, Workout } from "../lib/types";
 import { useRef } from "react";
 import ModalComponent, { ModalRef } from "./ModalAddSet";
+import { set } from "date-fns";
 
 const flatlistHeight = Dimensions.get("window").height - 350;
 
@@ -24,7 +25,7 @@ export default function ExerciseContainer({ data }: { data: Exercise[] }) {
       (exercise: Exercise) => exercise.id !== exerciseId
     );
 
-    setWorkouts((prev: Record<string, Workout>) => {
+    setWorkouts((prev) => {
       return {
         ...prev,
         [date]: {
@@ -38,7 +39,6 @@ export default function ExerciseContainer({ data }: { data: Exercise[] }) {
   const modalRef = useRef<ModalRef>(null);
 
   const handleOpenModal = (id: string) => {
-    // You can pass any data to the `openModal` function.
     const exercise = data.find((exercise) => exercise.id === id);
 
     if (!exercise) {
@@ -58,17 +58,20 @@ export default function ExerciseContainer({ data }: { data: Exercise[] }) {
         scrollEnabled={true}
         renderItem={({ item }: { item: Exercise }) => (
           <View style={styles.exerciseRow}>
-            <Text style={styles.exerciseText}>{`${item.name}: `}</Text>
-
-            <FlatList
-              data={item.sets}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) => (
-                <Text>
-                  {item.weight}kg for {item.reps} reps
-                </Text>
-              )}
-            />
+            <View style={styles.exerciseNameWrapper}>
+              <Text style={styles.exerciseText}>{`${item.name}: `}</Text>
+            </View>
+            <View style={styles.setRow}>
+              <FlatList
+                data={item.sets}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item }) => (
+                  <Text>
+                    {item.weight}kg x {item.reps}
+                  </Text>
+                )}
+              />
+            </View>
             <Button
               backgroundColor="#f0f0f0"
               onPress={() => handleOpenModal(item.id)}
@@ -78,6 +81,7 @@ export default function ExerciseContainer({ data }: { data: Exercise[] }) {
               <Icon name="plus" size={15} color="#333" />
             </Button>
             <Button
+              style={{ marginLeft: 10 }}
               backgroundColor="#f0f0f0"
               onPress={() => removeExercise(item.id)}
               fontSize={16}
@@ -99,20 +103,33 @@ const styles = StyleSheet.create({
     borderColor: "gray",
     borderWidth: 0.5,
     borderRadius: 8,
-    padding: 12,
+    paddingHorizontal: 12,
   },
   exerciseRow: {
-    flex: 1,
+    paddingVertical: 10,
     flexDirection: "row",
     justifyContent: "space-between",
     //width: '50%'
-    maxHeight: 100,
+    // maxHeight: 100,
     overflow: "scroll",
     borderBottomColor: "gray",
     borderBottomWidth: 0.5,
+
+    alignItems: "center",
+  },
+  exerciseNameWrapper: {
+    //height: "100%",
+    //justifyContent: "center",
   },
   exerciseText: {
     fontSize: 16,
-    marginTop: 15,
+
+    maxWidth: 150,
+    minWidth: 150,
+  },
+  setRow: {
+    ///  flexDirection: "row",
+    flex: 1,
+    // flexWrap: "wrap",
   },
 });

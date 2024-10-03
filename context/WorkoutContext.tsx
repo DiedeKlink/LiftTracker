@@ -55,7 +55,7 @@ export const WorkoutProvider = ({ children }: WorkOutProviderProps) => {
         exercises: [],
       },
     };
-    setWorkouts((prev: Record<string, Workout>) => {
+    setWorkouts((prev) => {
       if (prev[date]) {
         return {
           ...prev,

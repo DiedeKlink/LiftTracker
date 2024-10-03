@@ -17,7 +17,11 @@ export default function CalendarScreen({ navigation }: Props) {
     .map((date) => ({
       dateString: date,
       split: workouts[date].split,
-    }));
+    }))
+    .sort(
+      (a, b) =>
+        new Date(b.dateString).getTime() - new Date(a.dateString).getTime()
+    );
 
   const markedDates = Object.keys(workouts).reduce<
     Record<string, { marked: boolean }>
