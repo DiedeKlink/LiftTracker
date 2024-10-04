@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import uuid from "react-native-uuid";
 import { popularExercises } from "../data/popularExercises";
 import Button from "./Button";
@@ -112,13 +112,19 @@ export default function AddExercise() {
     }
   };
 
-  const reversedExercises = [...(workouts[date]?.exercises || [])].reverse();
+  const reversedExercises = useMemo(() => {
+    return [...(workouts[date]?.exercises || [])].reverse();
+  }, [workouts, date]);
 
-  const formattedExercises: Exercise[] = reversedExercises.map((exercise) => ({
-    name: exercise.name,
-    sets: exercise.sets,
-    id: exercise.id,
-  }));
+  const formattedExercises: Exercise[] = useMemo(
+    () =>
+      reversedExercises.map((exercise) => ({
+        name: exercise.name,
+        sets: exercise.sets,
+        id: exercise.id,
+      })),
+    [reversedExercises]
+  );
 
   return (
     <>

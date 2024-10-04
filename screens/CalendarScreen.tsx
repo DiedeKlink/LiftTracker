@@ -6,32 +6,38 @@ import Button from "../components/Button";
 import { RootStackParamList } from "../App";
 
 import type { StackScreenProps } from "@react-navigation/stack";
+import { useMemo } from "react";
 
 type Props = StackScreenProps<RootStackParamList, "Calendar">;
 
 export default function CalendarScreen({ navigation }: Props) {
   const { setDate, workouts } = useWorkoutContext();
 
-  const filteredWorkoutDates = Object.keys(workouts)
-    .filter((date) => workouts[date].exercises.length > 0)
-    .map((date) => ({
-      dateString: date,
-      split: workouts[date].split,
-    }))
-    .sort(
-      (a, b) =>
-        new Date(b.dateString).getTime() - new Date(a.dateString).getTime()
-    );
+  const filteredWorkoutDates = useMemo(() => {
+    return Object.keys(workouts)
+      .filter((date) => workouts[date].exercises.length > 0)
+      .map((date) => ({
+        dateString: date,
+        split: workouts[date].split,
+      }))
+      .sort(
+        (a, b) =>
+          new Date(b.dateString).getTime() - new Date(a.dateString).getTime()
+      );
+  }, [workouts]);
 
-  const markedDates = Object.keys(workouts).reduce<
-    Record<string, { marked: boolean }>
-  >((acc, curr) => {
-    if (workouts[curr].exercises.length === 0) {
-      return acc;
-    }
-    acc[curr] = { marked: true };
-    return acc;
-  }, {});
+  const markedDates = useMemo(() => {
+    return Object.keys(workouts).reduce<Record<string, { marked: boolean }>>(
+      (acc, curr) => {
+        if (workouts[curr].exercises.length === 0) {
+          return acc;
+        }
+        acc[curr] = { marked: true };
+        return acc;
+      },
+      {}
+    );
+  }, [workouts]);
 
   const handleBtnPress = (day: string) => {
     setDate(day);
