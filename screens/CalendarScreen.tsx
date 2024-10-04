@@ -1,5 +1,5 @@
 import { FlatList, StyleSheet, Text, View } from "react-native";
-import { Calendar, CalendarList, Agenda } from "react-native-calendars";
+import { Calendar } from "react-native-calendars";
 import { useWorkoutContext } from "../lib/hooks";
 import { format } from "date-fns";
 import Button from "../components/Button";

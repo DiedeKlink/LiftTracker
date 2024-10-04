@@ -1,130 +1,25 @@
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
-import React, { useEffect, useMemo, useState } from "react";
-import uuid from "react-native-uuid";
-import { popularExercises } from "../data/popularExercises";
+import React from "react";
 import Button from "./Button";
 import { useWorkoutContext } from "../lib/hooks";
-import { Exercise } from "../lib/types";
 import Icon from "react-native-vector-icons/Feather";
-import { getItem, setItem } from "../utils/AsyncStorage";
 import ExerciseContainer from "./ExerciseContainer";
 
 export default function AddExercise() {
-  const [exerciseName, setExerciseName] = useState<string>("");
-  const [weight, setWeight] = useState<number | null>(null);
-  const [reps, setReps] = useState<number | null>(null);
-
-  const [filteredExercises, setFilteredExercises] = useState<string[]>([]);
-
-  const [userExercises, setUserExercises] = useState<string[]>([]);
-
-  useEffect(() => {
-    getItem("userExercises").then((data) => {
-      if (data) {
-        setUserExercises(JSON.parse(data));
-      }
-    });
-  }, []);
-
-  const { date, workouts, setWorkouts, split } = useWorkoutContext();
-
-  const totalExercises = [...popularExercises, ...userExercises];
-
-  const addNewExercise = () => {
-    if (exerciseName === "" || weight === null || reps === null) {
-      alert("Fill in all fields");
-      return false;
-    }
-
-    const newExercise = {
-      id: uuid.v4().toString(),
-      name: exerciseName,
-      sets: [
-        {
-          weight: weight,
-          reps: reps,
-        },
-      ],
-    };
-
-    const newWorkout = {
-      [date]: {
-        split: split || "",
-        exercises: [newExercise],
-      },
-    };
-
-    setWorkouts((prev) => {
-      if (prev[date]) {
-        return {
-          ...prev,
-          [date]: {
-            ...prev[date],
-            exercises: [...prev[date].exercises, newExercise],
-          },
-        };
-      } else {
-        return {
-          ...prev,
-          ...newWorkout,
-        };
-      }
-    });
-
-    if (
-      !popularExercises.includes(exerciseName) &&
-      !userExercises.includes(exerciseName)
-    ) {
-      setUserExercises((prev) => [...prev, exerciseName]);
-    }
-
-    setExerciseName("");
-    setWeight(null);
-    setReps(null);
-    setFilteredExercises([]);
-  };
-
-  useEffect(() => {
-    setItem("userExercises", JSON.stringify(userExercises));
-  }, [workouts]);
-
-  const removeUserExercise = (exercise: string) => {
-    setUserExercises((prev) => prev.filter((ex) => ex !== exercise));
-    setFilteredExercises([]);
-  };
-
-  const selectExercise = (exercise: string) => {
-    setExerciseName(exercise);
-    setFilteredExercises([]);
-  };
-
-  const handleExerciseNameChange = (text: string) => {
-    setExerciseName(text);
-
-    if (text) {
-      setFilteredExercises(
-        totalExercises.filter((exercise) =>
-          exercise.toLowerCase().includes(text.toLowerCase())
-        )
-      );
-    } else {
-      setFilteredExercises([]);
-    }
-  };
-
-  const reversedExercises = useMemo(() => {
-    return [...(workouts[date]?.exercises || [])].reverse();
-  }, [workouts, date]);
-
-  const formattedExercises: Exercise[] = useMemo(
-    () =>
-      reversedExercises.map((exercise) => ({
-        name: exercise.name,
-        sets: exercise.sets,
-        id: exercise.id,
-      })),
-    [reversedExercises]
-  );
+  const {
+    formattedExercises,
+    handleExerciseNameChange,
+    exerciseName,
+    filteredExercises,
+    selectExercise,
+    userExercises,
+    removeUserExercise,
+    weight,
+    setWeight,
+    reps,
+    setReps,
+    addNewExercise,
+  } = useWorkoutContext();
 
   return (
     <>

@@ -18,23 +18,7 @@ import ModalComponent, { ModalRef } from "./ModalAddSet";
 const flatlistHeight = Dimensions.get("window").height - 350;
 
 export default function ExerciseContainer({ data }: { data: Exercise[] }) {
-  const { date, workouts, setWorkouts } = useWorkoutContext();
-
-  const removeExercise = (exerciseId: string) => {
-    const updatedExercises = workouts[date].exercises.filter(
-      (exercise: Exercise) => exercise.id !== exerciseId
-    );
-
-    setWorkouts((prev) => {
-      return {
-        ...prev,
-        [date]: {
-          ...prev[date],
-          exercises: updatedExercises,
-        },
-      };
-    });
-  };
+  const { removeExercise } = useWorkoutContext();
 
   const modalRef = useRef<ModalRef>(null);
 

@@ -1,10 +1,9 @@
-import { forwardRef, useImperativeHandle, useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
-import { TextInput } from "react-native-gesture-handler";
+import { forwardRef, useImperativeHandle, useRef, useState } from "react";
+import { StyleSheet, Text, View, TextInput } from "react-native";
 import Modal from "react-native-modal";
 import { useWorkoutContext } from "../lib/hooks";
 import Button from "./Button";
-import { Exercise, Workout } from "../lib/types";
+import { Exercise } from "../lib/types";
 
 export interface ModalRef {
   openModal: (data: Exercise) => void;
@@ -19,9 +18,12 @@ const ModalComponent = forwardRef<ModalRef, {}>((props, ref) => {
 
   const { date, workouts, setWorkouts } = useWorkoutContext();
 
+  const weightRef = useRef<TextInput>(null);
+
   const openModal = (data: Exercise) => {
     setModalData(data);
     setIsVisible(true);
+    // weightRef.current?.focus(); // Remove this line
   };
 
   const closeModal = () => {
@@ -75,6 +77,7 @@ const ModalComponent = forwardRef<ModalRef, {}>((props, ref) => {
       style={styles.modal}
       isVisible={isVisible}
       onBackdropPress={closeModal}
+      onModalShow={() => weightRef.current?.focus()}
     >
       {modalData ? (
         <View style={styles.container}>
@@ -89,6 +92,7 @@ const ModalComponent = forwardRef<ModalRef, {}>((props, ref) => {
               }
               value={addSetWeight ? addSetWeight.toString() : ""}
               maxLength={4}
+              ref={weightRef}
             />
             <TextInput
               style={[
