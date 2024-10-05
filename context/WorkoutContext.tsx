@@ -1,7 +1,13 @@
 import { addDays, format, subDays } from "date-fns";
-import { createContext, useEffect, useMemo, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { Exercise, Workout } from "../lib/types";
-import { getItem, setItem } from "../utils/AsyncStorage";
+import { getItem, removeItem, setItem } from "../utils/AsyncStorage";
 import uuid from "react-native-uuid";
 import { popularExercises } from "../data/popularExercises";
 
@@ -68,7 +74,11 @@ export const WorkoutProvider = ({ children }: WorkOutProviderProps) => {
     setItem("workouts", JSON.stringify(workouts));
   }, [workouts]);
 
-  const addNewExercise = () => {
+  // useEffect(() => {
+  //   removeItem("workouts");
+  // }, []);
+
+  const addNewExercise = useCallback(() => {
     if (exerciseName === "" || weight === null || reps === null) {
       alert("Fill in all fields");
       return false;
@@ -107,7 +117,7 @@ export const WorkoutProvider = ({ children }: WorkOutProviderProps) => {
           ...newWorkout,
         };
       }
-    });
+    }, []);
 
     if (
       !popularExercises.includes(exerciseName) &&
@@ -120,7 +130,15 @@ export const WorkoutProvider = ({ children }: WorkOutProviderProps) => {
     setWeight(null);
     setReps(null);
     setFilteredExercises([]);
-  };
+  }, [
+    exerciseName,
+    weight,
+    reps,
+    date,
+    split,
+    popularExercises,
+    userExercises,
+  ]);
 
   const removeExercise = (exerciseId: string) => {
     const updatedExercises = workouts[date].exercises.filter(
@@ -141,27 +159,14 @@ export const WorkoutProvider = ({ children }: WorkOutProviderProps) => {
   const addSplit = (splits: string) => {
     setSplit(splits);
 
-    const newWorkout = {
-      [date]: {
-        split: splits,
-        exercises: [],
-      },
-    };
     setWorkouts((prev) => {
-      if (prev[date]) {
-        return {
-          ...prev,
-          [date]: {
-            ...prev[date],
-            split: splits,
-          },
-        };
-      } else {
-        return {
-          ...prev,
-          ...newWorkout,
-        };
-      }
+      return {
+        ...prev,
+        [date]: {
+          ...prev[date],
+          split: splits,
+        },
+      };
     });
   };
 
@@ -231,32 +236,57 @@ export const WorkoutProvider = ({ children }: WorkOutProviderProps) => {
     }
   };
 
+  const contextValue = useMemo(
+    () => ({
+      split,
+      addSplit,
+      date,
+      handleSetDate,
+      workouts,
+      setWorkouts,
+      setSplit,
+      setDate,
+      formattedExercises,
+      handleExerciseNameChange,
+      exerciseName,
+      filteredExercises,
+      selectExercise,
+      removeUserExercise,
+      userExercises,
+      weight,
+      setWeight,
+      reps,
+      setReps,
+      addNewExercise,
+      removeExercise,
+    }),
+    [
+      split,
+      addSplit,
+      date,
+      handleSetDate,
+      workouts,
+      setWorkouts,
+      setSplit,
+      setDate,
+      formattedExercises,
+      handleExerciseNameChange,
+      exerciseName,
+      filteredExercises,
+      selectExercise,
+      removeUserExercise,
+      userExercises,
+      weight,
+      setWeight,
+      reps,
+      setReps,
+      addNewExercise,
+      removeExercise,
+    ]
+  );
+
   return (
-    <WorkoutContext.Provider
-      value={{
-        split,
-        addSplit,
-        date,
-        handleSetDate,
-        workouts,
-        setWorkouts,
-        setSplit,
-        setDate,
-        formattedExercises,
-        handleExerciseNameChange,
-        exerciseName,
-        filteredExercises,
-        selectExercise,
-        removeUserExercise,
-        userExercises,
-        weight,
-        setWeight,
-        reps,
-        setReps,
-        addNewExercise,
-        removeExercise,
-      }}
-    >
+    <WorkoutContext.Provider value={contextValue}>
       {children}
     </WorkoutContext.Provider>
   );

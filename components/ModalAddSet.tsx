@@ -23,7 +23,6 @@ const ModalComponent = forwardRef<ModalRef, {}>((props, ref) => {
   const openModal = (data: Exercise) => {
     setModalData(data);
     setIsVisible(true);
-    // weightRef.current?.focus(); // Remove this line
   };
 
   const closeModal = () => {

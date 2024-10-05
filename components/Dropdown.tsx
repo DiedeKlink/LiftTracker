@@ -11,6 +11,7 @@ const data = [
   { label: "Chest", value: "Chest" },
   { label: "Back", value: "Back" },
   { label: "Arms", value: "Arms" },
+  { label: "Shoulders", value: "Shoulders" },
   { label: "Other", value: "Other" },
 ];
 

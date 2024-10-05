@@ -125,19 +125,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
 
-  btnStyle: {
-    backgroundColor: "#32a852",
-    paddingVertical: 10,
-    marginVertical: 10,
-    borderRadius: 8,
-    paddingHorizontal: 5,
-  },
-  btnText: {
-    color: "#fff",
-    textAlign: "center",
-    fontSize: 16,
-    fontWeight: "600",
-  },
   row: {
     flexDirection: "row",
   },
@@ -185,46 +172,9 @@ const styles = StyleSheet.create({
     zIndex: 1000,
     //backgroundColor: "#fff",
   },
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 22,
-    height: "100%",
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: "white",
-    borderRadius: 5,
-    padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
   button: {
     borderRadius: 20,
     padding: 10,
     elevation: 2,
-  },
-  buttonOpen: {
-    backgroundColor: "#F194FF",
-  },
-  buttonClose: {
-    backgroundColor: "#2196F3",
-  },
-  textStyle: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: "center",
   },
 });
