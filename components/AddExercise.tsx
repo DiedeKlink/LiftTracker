@@ -1,9 +1,9 @@
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import React from "react";
 import Button from "./Button";
-import { useWorkoutContext } from "../lib/hooks";
 import Icon from "react-native-vector-icons/Feather";
 import ExerciseContainer from "./ExerciseContainer";
+import { useWorkoutContext } from "../context/WorkoutContext";
 
 export default function AddExercise() {
   const {

@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
-
-import { useWorkoutContext } from "../lib/hooks";
+import { useWorkoutContext } from "../context/WorkoutContext";
 
 const data = [
   { label: "Push", value: "Push" },

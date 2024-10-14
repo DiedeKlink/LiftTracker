@@ -2,12 +2,13 @@ import { addDays, format, subDays } from "date-fns";
 import {
   createContext,
   useCallback,
+  useContext,
   useEffect,
   useMemo,
   useState,
 } from "react";
 import { Exercise, Workout } from "../lib/types";
-import { getItem, removeItem, setItem } from "../utils/AsyncStorage";
+import { getItem, setItem } from "../utils/AsyncStorage";
 import uuid from "react-native-uuid";
 import { popularExercises } from "../data/popularExercises";
 
@@ -117,7 +118,7 @@ export const WorkoutProvider = ({ children }: WorkOutProviderProps) => {
           ...newWorkout,
         };
       }
-    }, []);
+    });
 
     if (
       !popularExercises.includes(exerciseName) &&
@@ -293,3 +294,12 @@ export const WorkoutProvider = ({ children }: WorkOutProviderProps) => {
 };
 
 //export const useWorkouts = () => useContext(WorkoutContext);
+export function useWorkoutContext() {
+  const context = useContext(WorkoutContext);
+  if (!context) {
+    throw new Error(
+      "WorkoutContext must be used within a WorkoutContextProvider"
+    );
+  }
+  return context;
+}

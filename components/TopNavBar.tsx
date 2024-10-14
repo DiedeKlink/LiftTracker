@@ -4,9 +4,10 @@ import React from "react";
 import Icon from "react-native-vector-icons/FontAwesome";
 
 import { format } from "date-fns";
-import { useWorkoutContext } from "../lib/hooks";
+
 import { StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../App";
+import { useWorkoutContext } from "../context/WorkoutContext";
 
 type Props = StackScreenProps<RootStackParamList, "Workouts">;
 

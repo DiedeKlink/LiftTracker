@@ -1,75 +1,28 @@
 import { forwardRef, useImperativeHandle, useRef, useState } from "react";
 import { StyleSheet, Text, View, TextInput } from "react-native";
 import Modal from "react-native-modal";
-import { useWorkoutContext } from "../lib/hooks";
+
 import Button from "./Button";
-import { Exercise } from "../lib/types";
 
-export interface ModalRef {
-  openModal: (data: Exercise) => void;
-}
+import { useModalContext } from "../context/ModalContext";
+import { useSetContext } from "../context/SetContext";
 
-const ModalComponent = forwardRef<ModalRef, {}>((props, ref) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [modalData, setModalData] = useState<Exercise>();
-
-  const [addSetWeight, setAddSetWeight] = useState<number | null>(null);
-  const [addSetReps, setAddSetReps] = useState<number | null>(null);
-
-  const { date, workouts, setWorkouts } = useWorkoutContext();
+const ModalComponent = forwardRef((props, ref) => {
+  const { isVisible, modalData, openModal, closeModal } = useModalContext();
+  const {
+    addNewSet,
+    addSetWeight,
+    setAddSetWeight,
+    addSetReps,
+    setAddSetReps,
+  } = useSetContext();
 
   const weightRef = useRef<TextInput>(null);
-
-  const openModal = (data: Exercise) => {
-    setModalData(data);
-    setIsVisible(true);
-  };
-
-  const closeModal = () => {
-    setIsVisible(false);
-  };
 
   useImperativeHandle(ref, () => ({
     openModal,
     closeModal,
   }));
-
-  const addNewSet = (exerciseId: string) => {
-    if (!addSetWeight || !addSetReps) {
-      alert("Fill in all fields");
-      return false;
-    }
-
-    const newSet = {
-      weight: addSetWeight,
-      reps: addSetReps,
-    };
-
-    const updatedExercises = workouts[date].exercises.map((exercise) => {
-      if (exercise.id === exerciseId) {
-        return {
-          ...exercise,
-          sets: [...exercise.sets, newSet],
-        };
-      } else {
-        return exercise;
-      }
-    });
-
-    setWorkouts((prev) => {
-      return {
-        ...prev,
-        [date]: {
-          ...prev[date],
-          exercises: updatedExercises,
-        },
-      };
-    });
-
-    setAddSetWeight(null);
-    setAddSetReps(null);
-    closeModal();
-  };
 
   return (
     <Modal

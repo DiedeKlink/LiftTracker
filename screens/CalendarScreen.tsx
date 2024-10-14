@@ -1,12 +1,13 @@
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import { Calendar } from "react-native-calendars";
-import { useWorkoutContext } from "../lib/hooks";
+
 import { format } from "date-fns";
 import Button from "../components/Button";
 import { RootStackParamList } from "../App";
 
 import type { StackScreenProps } from "@react-navigation/stack";
 import { useMemo } from "react";
+import { useWorkoutContext } from "../context/WorkoutContext";
 
 type Props = StackScreenProps<RootStackParamList, "Calendar">;
 
