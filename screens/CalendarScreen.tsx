@@ -47,6 +47,7 @@ export default function CalendarScreen({ navigation }: Props) {
 
   const handleDayPress = (day: { dateString: string }) => {
     setDate(day.dateString);
+
     navigation.navigate("Workouts");
   };
 

@@ -10,7 +10,6 @@ export default function AddExercise() {
     formattedExercises,
     handleExerciseNameChange,
     exerciseName,
-    filteredExercises,
     selectExercise,
     userExercises,
     removeUserExercise,
@@ -19,6 +18,8 @@ export default function AddExercise() {
     reps,
     setReps,
     addNewExercise,
+    filteredExercises,
+    setFilteredExercises,
   } = useWorkoutContext();
 
   return (
@@ -31,6 +32,7 @@ export default function AddExercise() {
           value={exerciseName}
           placeholder="Exercise Name"
           maxLength={50}
+          onBlur={() => setFilteredExercises([])}
         />
 
         {filteredExercises.length > 0 && (

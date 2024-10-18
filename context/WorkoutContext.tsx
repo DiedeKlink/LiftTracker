@@ -1,4 +1,3 @@
-import { addDays, format, subDays } from "date-fns";
 import {
   createContext,
   useCallback,
@@ -8,17 +7,15 @@ import {
   useState,
 } from "react";
 import { Exercise, Workout } from "../lib/types";
-import { getItem, setItem } from "../utils/AsyncStorage";
 import uuid from "react-native-uuid";
 import { popularExercises } from "../data/popularExercises";
-
-type DirectionProps = "minusDay" | "plusDay" | "today";
+import { useUserExercises, useWorkouts } from "../lib/hooks";
+import { setItem } from "../utils/AsyncStorage";
 
 type WorkoutContext = {
   split: string | null;
   addSplit: (splits: string) => void;
   date: string;
-  handleSetDate: (direction: DirectionProps) => void;
   workouts: Record<string, Workout>;
   setWorkouts: React.Dispatch<React.SetStateAction<Record<string, Workout>>>;
   setSplit: React.Dispatch<React.SetStateAction<string | null>>;
@@ -36,6 +33,7 @@ type WorkoutContext = {
   setReps: React.Dispatch<React.SetStateAction<number | null>>;
   addNewExercise: () => void;
   removeExercise: (exerciseId: string) => void;
+  setFilteredExercises: React.Dispatch<React.SetStateAction<string[]>>;
 };
 
 export const WorkoutContext = createContext<WorkoutContext | null>(null);
@@ -48,36 +46,26 @@ export const WorkoutProvider = ({ children }: WorkOutProviderProps) => {
   const [exerciseName, setExerciseName] = useState<string>("");
   const [weight, setWeight] = useState<number | null>(null);
   const [reps, setReps] = useState<number | null>(null);
-  const [split, setSplit] = useState<string | null>("Push");
 
-  const [date, setDate] = useState<string>(format(new Date(), "yyyy-MM-dd"));
+  const { date, setDate, split, setSplit, workouts, setWorkouts } =
+    useWorkouts();
 
-  const [workouts, setWorkouts] = useState<Record<string, Workout>>({
-    [date]: {
-      split: split as string,
-      exercises: [],
-    },
-  });
-
-  const [filteredExercises, setFilteredExercises] = useState<string[]>([]);
-  const [userExercises, setUserExercises] = useState<string[]>([]);
-  const totalExercises = [...popularExercises, ...userExercises];
+  const {
+    userExercises,
+    setUserExercises,
+    removeUserExercise,
+    setFilteredExercises,
+    totalExercises,
+    filteredExercises,
+  } = useUserExercises();
 
   useEffect(() => {
-    getItem("workouts").then((data) => {
-      if (data) {
-        setWorkouts(JSON.parse(data));
-      }
-    });
-  }, []);
+    setItem("userExercises", JSON.stringify(userExercises));
+  }, [workouts]);
 
   useEffect(() => {
     setItem("workouts", JSON.stringify(workouts));
   }, [workouts]);
-
-  // useEffect(() => {
-  //   removeItem("workouts");
-  // }, []);
 
   const addNewExercise = useCallback(() => {
     if (exerciseName === "" || weight === null || reps === null) {
@@ -171,23 +159,6 @@ export const WorkoutProvider = ({ children }: WorkOutProviderProps) => {
     });
   };
 
-  useEffect(() => {
-    getItem("userExercises").then((data) => {
-      if (data) {
-        setUserExercises(JSON.parse(data));
-      }
-    });
-  }, []);
-
-  useEffect(() => {
-    setItem("userExercises", JSON.stringify(userExercises));
-  }, [workouts]);
-
-  const removeUserExercise = (exercise: string) => {
-    setUserExercises((prev) => prev.filter((ex) => ex !== exercise));
-    setFilteredExercises([]);
-  };
-
   const selectExercise = (exercise: string) => {
     setExerciseName(exercise);
     setFilteredExercises([]);
@@ -221,28 +192,12 @@ export const WorkoutProvider = ({ children }: WorkOutProviderProps) => {
     [reversedExercises]
   );
 
-  const handleSetDate = (direction: DirectionProps) => {
-    let newDate;
-    if (direction === "minusDay") {
-      newDate = format(subDays(new Date(date), 1), "yyyy-MM-dd");
-    }
-    if (direction === "plusDay") {
-      newDate = format(addDays(new Date(date), 1), "yyyy-MM-dd");
-    }
-    if (direction === "today") {
-      newDate = format(new Date(), "yyyy-MM-dd");
-    }
-    if (newDate) {
-      setDate(newDate);
-    }
-  };
-
   const contextValue = useMemo(
     () => ({
       split,
       addSplit,
       date,
-      handleSetDate,
+
       workouts,
       setWorkouts,
       setSplit,
@@ -250,7 +205,6 @@ export const WorkoutProvider = ({ children }: WorkOutProviderProps) => {
       formattedExercises,
       handleExerciseNameChange,
       exerciseName,
-      filteredExercises,
       selectExercise,
       removeUserExercise,
       userExercises,
@@ -260,12 +214,14 @@ export const WorkoutProvider = ({ children }: WorkOutProviderProps) => {
       setReps,
       addNewExercise,
       removeExercise,
+      filteredExercises,
+      setFilteredExercises,
     }),
     [
       split,
       addSplit,
       date,
-      handleSetDate,
+
       workouts,
       setWorkouts,
       setSplit,
@@ -273,7 +229,6 @@ export const WorkoutProvider = ({ children }: WorkOutProviderProps) => {
       formattedExercises,
       handleExerciseNameChange,
       exerciseName,
-      filteredExercises,
       selectExercise,
       removeUserExercise,
       userExercises,
@@ -283,6 +238,8 @@ export const WorkoutProvider = ({ children }: WorkOutProviderProps) => {
       setReps,
       addNewExercise,
       removeExercise,
+      filteredExercises,
+      setFilteredExercises,
     ]
   );
 

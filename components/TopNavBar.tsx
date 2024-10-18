@@ -3,16 +3,17 @@ import React from "react";
 
 import Icon from "react-native-vector-icons/FontAwesome";
 
-import { format } from "date-fns";
+import { addDays, format, subDays } from "date-fns";
 
 import { StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../App";
+import { DirectionProps } from "../lib/types";
 import { useWorkoutContext } from "../context/WorkoutContext";
 
 type Props = StackScreenProps<RootStackParamList, "Workouts">;
 
 export default function TopNavBar({ navigation }: Props) {
-  const { date, handleSetDate } = useWorkoutContext();
+  const { date, setDate } = useWorkoutContext();
 
   let dateValue = format(new Date(date), "EEEE, d MMM");
 
@@ -26,6 +27,22 @@ export default function TopNavBar({ navigation }: Props) {
   }
 
   //  const dateValue = format(new Date(date), "dd-MM-yyyy");
+
+  function handleSetDate(direction: DirectionProps) {
+    let newDate;
+    if (direction === "minusDay") {
+      newDate = format(subDays(new Date(date), 1), "yyyy-MM-dd");
+    }
+    if (direction === "plusDay") {
+      newDate = format(addDays(new Date(date), 1), "yyyy-MM-dd");
+    }
+    if (direction === "today") {
+      newDate = format(new Date(), "yyyy-MM-dd");
+    }
+    if (newDate) {
+      setDate(newDate);
+    }
+  }
 
   return (
     <View style={styles.container}>
