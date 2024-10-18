@@ -18,3 +18,7 @@ export type Set = {
 export type Workouts = Workout[];
 
 export type DirectionProps = "minusDay" | "plusDay" | "today";
+
+export type ModalRef = {
+  openModal: (exercise: Exercise) => void;
+};
