@@ -162,6 +162,20 @@ export const WorkoutProvider = ({ children }: WorkOutProviderProps) => {
   const selectExercise = (exercise: string) => {
     setExerciseName(exercise);
     setFilteredExercises([]);
+    //console.log(workouts);
+    // const mostRecentWorkout = Object.values(workouts)
+    //   .reverse()
+    //   .find((workout) => workout.exercises.some((ex) => ex.name === exercise));
+
+    // if (mostRecentWorkout) {
+    //   const recentExercise = mostRecentWorkout.exercises.find(
+    //     (ex) => ex.name === exercise
+    //   );
+    //   if (recentExercise) {
+    //     setWeight(recentExercise.sets[0].weight);
+    //     setReps(recentExercise.sets[0].reps);
+    //   }
+    // }
   };
 
   const handleExerciseNameChange = (text: string) => {
@@ -179,7 +193,7 @@ export const WorkoutProvider = ({ children }: WorkOutProviderProps) => {
   };
 
   const reversedExercises = useMemo(() => {
-    return [...(workouts[date]?.exercises || [])].reverse();
+    return [...(workouts[date]?.exercises || [])];
   }, [workouts, date]);
 
   const formattedExercises: Exercise[] = useMemo(

@@ -72,7 +72,7 @@ export default function CalendarScreen({ navigation }: Props) {
                 : format(new Date(item.dateString), "EE, dd MMM")}
               {/* {format(new Date(item.dateString), "dd-MM-yyyy")} */}
             </Text>
-            <Text style={styles.splitText}>Split: {item.split}</Text>
+            <Text style={styles.splitText}>{item.split}</Text>
             <Button
               backgroundColor="#f0f0f0"
               fontSize={16}
